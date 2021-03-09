@@ -25,19 +25,26 @@ class App {
             const text = this.$noteText.value;
             const hasNote = title || text;
             if (hasNote) {
-                this.addNote({title, text});
+                this.addNote({ title, text });
             }
         });
     }
 
     handleFormClick(event) {
         const isFormClicked = this.$form.contains(event.target);
+
+        const title = this.$noteTitle.value;
+        const text = this.$noteText.value;
+        const hasNote = title || text;
+
         if (isFormClicked) {
             this.openForm();
+        } else if (hasNote) {
+            this.addNote({ title, text })
         } else {
             this.closeForm();
         }
-    }    
+    }
 
     openForm() {
         this.$form.classList.add('form-open');
@@ -53,10 +60,10 @@ class App {
         this.$noteText.value = "";
     }
 
-    addNote(note) {
+    addNote({ title, text }) {
         const newNote = {
-            title: note. title,
-            text: note.text,
+            title,
+            text,
             color: 'white',
             id: this.generateId()
         };
@@ -66,7 +73,7 @@ class App {
     }
 
     generateId() {
-        let id = this.notes.length > 0 ? this.notes[this.notes.length -1].id + 1 : 1;
+        let id = this.notes.length > 0 ? this.notes[this.notes.length - 1].id + 1 : 1;
         return id;
     }
 
