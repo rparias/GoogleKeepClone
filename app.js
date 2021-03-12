@@ -17,6 +17,7 @@ class App {
         this.$modal = document.querySelector('.modal');
         this.$modalTitle = document.querySelector('.modal-title');
         this.$modalText = document.querySelector('.modal-text');
+        this.$modalCloseButton = document.querySelector('.modal-close-button');
 
         this.addEventListeners();
     }
@@ -32,6 +33,10 @@ class App {
             event.stopPropagation();
             this.closeForm();
         });
+
+        this.$modalCloseButton.addEventListener('click', event => {
+            this.closeModal(event);
+        })
 
         this.$form.addEventListener("submit", event => {
             event.preventDefault();
@@ -68,6 +73,11 @@ class App {
         }
     }
 
+    closeModal(event) {
+        this.editNote();
+        this.$modal.classList.toggle('open-modal');
+    }
+
     openForm() {
         this.$form.classList.add('form-open');
         this.$noteTitle.style.display = 'block';
@@ -101,6 +111,15 @@ class App {
         this.notes = [...this.notes, newNote];
         this.displayNotes();
         this.closeForm();
+    }
+
+    editNote() {
+        const title = this.$modalTitle.value;
+        const text = this.$modalText.value;
+        this.notes = this.notes.map(note =>
+            note.id === Number(this.id) ? { ...note, title, text } : note
+        );
+        this.displayNotes();
     }
 
     generateId() {
