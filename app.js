@@ -3,6 +3,9 @@ class App {
         console.log('app started!');
 
         this.notes = [];
+        this.title = '';
+        this.text = '';
+        this.id = '';
 
         this.$form = document.querySelector('#form');
         this.$placeholder = document.querySelector('#placeholder');
@@ -12,6 +15,8 @@ class App {
         this.$formButtons = document.querySelector('#form-buttons');
         this.$closeButton = document.querySelector('#form-close-button');
         this.$modal = document.querySelector('.modal');
+        this.$modalTitle = document.querySelector('.modal-title');
+        this.$modalText = document.querySelector('.modal-text');
 
         this.addEventListeners();
     }
@@ -19,6 +24,7 @@ class App {
     addEventListeners() {
         document.body.addEventListener('click', event => {
             this.handleFormClick(event);
+            this.selectNote(event);
             this.openModal(event);
         });
 
@@ -57,6 +63,8 @@ class App {
     openModal(event) {
         if (event.target.closest('.note')) {
             this.$modal.classList.toggle('open-modal');
+            this.$modalTitle.value = this.title;
+            this.$modalText.value = this.text;
         }
     }
 
@@ -72,6 +80,15 @@ class App {
         this.$formButtons.style.display = 'none';
         this.$noteTitle.value = "";
         this.$noteText.value = "";
+    }
+
+    selectNote(event) {
+        const $selectedNote = event.target.closest('.note');
+        if (!$selectedNote) return;
+        const [$noteTitle, $noteText] = $selectedNote.children;
+        this.title = $noteTitle.innerHTML;
+        this.text = $noteText.innerHTML;
+        this.id = $selectedNote.dataset.id;
     }
 
     addNote({ title, text }) {
@@ -96,7 +113,7 @@ class App {
         this.$placeholder.style.display = !hasNotes ? 'none' : 'flex';
 
         this.$notes.innerHTML = this.notes.map(note => `
-        <div style="background: ${note.color};" class="note">
+        <div style="background: ${note.color};" class="note" data-id="${note.id}">
             <div class="${note.title && 'note-title'}">${note.title}</div>
             <div class="note-text">${note.text}</div>
             <div class="toolbar-container">
